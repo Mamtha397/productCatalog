@@ -1,3 +1,5 @@
+const port = process.env.PORT || 3000;
+
 var express = require('express');
 var app = express();
 var mysql = require('mysql');
@@ -364,6 +366,6 @@ app.get("/comments", function(req,res){
     })
 });
 
-app.listen(3000, function() {
+app.listen(port, function() {
     console.log("APP is running on 8081")
 })
