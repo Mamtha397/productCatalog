@@ -311,6 +311,7 @@ app.post("/comment/:product_id/:comment", function(req,res){
     const user_id = req.headers.token;
     const {product_id, comment} = req.params;
     const time = Date.now();
+    
 
     const insertQuery = `INSERT INTO comment (user_id, product_id, comment, time) VALUES ('${user_id}', '${product_id}', '${comment}', '${time}');`;
 
