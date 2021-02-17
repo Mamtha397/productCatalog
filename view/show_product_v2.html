@@ -360,8 +360,9 @@
                                 console.log(resultComment)
                                 for (let j = 0; j < resultComment.length; j++) {
                                     html += `
-                                    ${result[i].id == resultComment[j].product_id?`<div style="display:flex;">
-                                        <p>${resultComment[j].name}</p>
+                                    ${result[i].id == resultComment[j].product_id?`
+                                        <div style="display:flex;">
+                                        <p>${resultComment[j].name} : </p>
                                         <p>${resultComment[j].comment}</p>
                                         <p style="width:55%"><i>(${conversion(Date.now()-resultComment[j].time)})</i></p>
                                             ${idLS === resultComment[j].user_id ?
