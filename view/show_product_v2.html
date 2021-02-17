@@ -649,6 +649,7 @@
 
         // to do
         function editComment(comment_id, commentText) {
+            console.log(comment_id);
             var comment = prompt("Edit Comment: ", `"${commentText}"`);
             if (comment) {
                 $.ajax({
