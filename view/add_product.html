@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script></head>
+<body>
+
+<h2>HTML Forms</h2>
+
+<form>
+  <label>Product Name:</label>
+  <input id="p_name" type="text" name="p_name">
+  <label id="error_product_name" style="color: red;"></label>
+  <br><br>
+
+  <label>Description:</label>   
+  <textarea id="des" type="text" name="des"></textarea>
+  <label id="error_description" style="color: red;"></label>
+  <br><br>
+
+  <label>Price:</label>
+  <input id="price" type="number" name="price">
+  <label id="error_price" style="color: red;"></label>
+  <br><br>
+
+  <label>Stock Quantity:</label>
+  <input id="stock" type="number" name="stock">
+  <label id="error_stock" style="color: red;"></label>
+  <br><br>
+
+  <label>Product Code:</label>
+  <input id="p_code" type="number" name="p_code">
+  <label id="error_code" style="color: red;"></label>
+  <br><br>
+
+  <label>Product Colour:</label>
+  <input id="p_colours" type="text" name="p_colour" value="#000000">
+  <input id="p_colour" type="color" name="p_colour">
+  <label id="error_colour" style="color: red;"></label>
+  <br><br>
+
+  <label>Product Category:</label>
+  <Select id="p_category" name="p_category">
+    <option value="Electronics">Electronics</option>
+    <option value="mobile">mobile</option>
+  </Select>
+  
+  <input type="button" value="Submit" onclick="createProduct()">
+</form> 
+<h4 id="status"></h4>
+
+<script>
+
+  document.getElementById("p_colour").addEventListener("change", function(){
+    const colourCode = document.getElementById("p_colour").value;
+    document.getElementById("p_colours").value = colourCode;
+  });
+
+
+  let status;
+  let msg;
+  function productNameValid(productName){
+    if(productName.length === 0){
+      status=false;
+      msg="Product name is required"
+      error="product";
+      document.getElementById("error_product_name").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+
+    }
+    if(productName.length>25){
+      status=false;
+      msg="Product name is too long"
+      error="product";
+      document.getElementById("error_product_name").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    if(productName.length<3){
+      status=false;
+      msg="Product name is too short"
+      error="product";
+      document.getElementById("error_product_name").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="product name is valid";
+    document.getElementById("error_product_name").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      } 
+  }
+
+  function descriptionValid(description){
+    if(description.length === 0){
+      status=false;
+      msg="Description is required"
+      document.getElementById("error_description").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    if(description.length<20){
+      status=false;
+      msg="Description is too short"
+      document.getElementById("error_description").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    if(description.length>200){
+      status=false;
+      msg="Description is too long"
+      document.getElementById("error_description").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="description is valid";
+    document.getElementById("error_description").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      }
+  }
+  function priceValid(price){
+    if(price.length === 0){
+      status=false;
+      msg="Price is required"
+      document.getElementById("error_price").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="price is valid";
+    document.getElementById("error_price").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      }
+  }
+  function stockValid(stock){
+    if(stock.length === 0){
+      status=false;
+      msg="Stock is required"
+      document.getElementById("error_stock").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="stock is valid";
+    document.getElementById("error_stock").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      }
+  }
+  function codeValid(code){
+    if(code.length === 0){
+      status=false;
+      msg="Code is required"
+      document.getElementById("error_code").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="Code is valid";
+    document.getElementById("error_code").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      }
+  }
+  function colourValid(colour){
+    if(colour.length === 0){
+      status=false;
+      msg="Colour is required"
+      document.getElementById("error_colour").innerText = msg;
+      return {
+        status:status,
+        msg:msg,
+      }
+    }
+    status=true;
+    msg="Colour is valid";
+    document.getElementById("error_colour").innerText = "";
+    return {
+        status:status,
+        msg:msg,
+      }
+  }
+
+  function valid(productName, description, price, stock, p_code, p_colour, p_category){
+    const product_Name_valid = productNameValid(productName);
+    const description_valid = descriptionValid(description);
+    const price_valid = priceValid(price);
+    const stock_valid = stockValid(stock);
+    const code_valid = codeValid(p_code);
+    const colour_valid = colourValid(p_colour);
+
+    if(product_Name_valid.status && description_valid.status && price_valid.status && stock_valid.status && code_valid.status && colour_valid.status){
+      return true;
+    }
+      return false;
+    }
+
+  function createProduct(){
+    const productName = document.getElementById("p_name").value;
+    const description = document.getElementById("des").value;
+    const price = document.getElementById("price").value;
+    const stock = document.getElementById("stock").value;
+    const p_code = document.getElementById("p_code").value;
+    const p_colour = document.getElementById("p_colours").value;
+    const p_category = document.getElementById("p_category").value;
+    
+    if(valid(productName, description, price, stock, p_code, p_colour, p_category)){
+      $.ajax({
+        type: "POST",
+        url: "/addProduct",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        data: {
+          "productName": productName,
+          "description": description,
+          "price": price,
+          "stock": stock,
+          "code": p_code,
+          "colour": p_colour,
+          "category": p_category
+        },
+        success: function(result){
+          document.getElementById("status").innerText = result.msg;
+          window.location.href = "/";
+        },
+      });
+    }
+  }
+</script>
+</body>
+</html>

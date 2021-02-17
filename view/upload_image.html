@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        #image_div {
+            display: flex;
+        }
+        /* .imagePreview{
+        margin: 0px 10px 10px 10px;
+
+      } */
+        
+        .imageContainer {
+            display: flex;
+            flex-direction: column;
+            margin: 0px 10px 10px 10px;
+            padding: 10px;
+            border-style: solid;
+        }
+        
+        .imageBTN {
+            margin-top: 10px;
+        }
+        
+        .btnContainer {
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 id="page_title">Image Upload For Product ID -</h2>
+
+    <div style="width: 100%;">
+        <div id="image_div">
+
+        </div>
+    </div>
+
+    <form>
+        <div id="image_upload_div">
+            <img id="image0" />
+            <label>Add Image:</label>
+            <input class="image" type="file" name="image" onchange="showPreview(this,0)" multiple>
+        </div>
+        <br>
+
+        <input type="button" value="Upload Image" onclick="uploadImage()">
+    </form>
+    <h4 id="status"></h4>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        $.ajax({
+            type: "GET",
+            url: `/getOneProduct/${id}`,
+            success: function(result) {
+                document.getElementById("page_title").innerText = `Image Upload For Product ID - ${result[0].id}`
+                const images = result[0].images.split(",");
+                let html = "";
+                for (let i = 0; i < images.length; i++) {
+                    if (images[i]) {
+                        html += `<div class="imageContainer">
+            <img width="70%" height="70%" class="imagePreview" id="image${i+1}" src="${images[i]}"/> 
+            <div class="btnContainer">
+            <button class="imageBTN" onclick="makePrimaryImage('${images[i]}')"><i class="fa fa-star"></i></button>
+            <button class="imageBTN" onclick="deleteImage(${i})"><i class="fa fa-trash"></i></button>
+            <button class="imageBTN${i}" onclick="editImage(${i})"><i class="fa fa-pencil"></i></button>
+            </div>
+            </div>`;
+                    }
+                }
+                document.getElementById("image_div").insertAdjacentHTML('beforeend', html);
+            },
+        });
+
+        function showPreview(input, count, type) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $(`#image${count}`)
+                        .attr('src', e.target.result)
+                        .width(200)
+                        .height(100);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function uploadImage() {
+            const image = document.getElementsByClassName("image");
+
+            var form = new FormData();
+            for (let i = 0; i < image[0].files.length; i++) {
+                form.append(`images${i}`, image[0].files[i]);
+            }
+
+            form.append("numberOfImages", image[0].files.length);
+            form.append("id", id);
+
+
+            var settings = {
+                url: "/upload",
+                method: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                data: form,
+            };
+
+            $.ajax(settings).done(function(result) {
+                document.getElementById("status").innerText = result
+                window.location.reload();
+            });
+        }
+
+        function makePrimaryImage(fileName) {
+            if (confirm('Are you sure you want to Change Primary Image?')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/makePrimary",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: {
+                        "fileName": fileName,
+                        "id": id,
+                    },
+                    success: function(result) {
+                        document.getElementById("status").innerText = result;
+                        window.location.href = "/";
+                    },
+                });
+            }
+        }
+
+        function deleteImage(imageId) {
+            if (confirm('Are you sure you want to Delete this thing from the database?')) {
+                const images = document.getElementsByClassName("imagePreview")
+                console.log(images[0].src.split("/")[3])
+
+                var form = new FormData();
+                for (let i = 0; i < images.length; i++) {
+                    if (i !== imageId) {
+                        form.append(`images${i}`, images[i].src.split("/")[3]);
+                    }
+                }
+
+                form.append("numberOfImages", images.length);
+                form.append("id", id);
+
+
+                var settings = {
+                    url: "/deleteImage",
+                    method: "POST",
+                    timeout: 0,
+                    processData: false,
+                    mimeType: "multipart/form-data",
+                    contentType: false,
+                    data: form,
+                };
+
+                $.ajax(settings).done(function(result) {
+                    document.getElementById("status").innerText = result
+                    window.location.reload();
+                });
+            }
+        }
+
+        function editImage(editButtonId) {
+
+            let html = `<div>
+                <input id="editImage" type="file" name="image" onchange="showPreview(this,${editButtonId+1})">
+                <button class="imageBTN" onclick="updateImage(${editButtonId+1})"><i class="fa fa-check"></i></button>
+                <button class="imageBTN" onclick="closeEdit()"><i class="fa fa-times"></i></button>
+                </div>
+                `
+            document.getElementsByClassName(`imageBTN${editButtonId}`)[0].insertAdjacentHTML('afterend', html);
+            document.getElementsByClassName(`imageBTN${editButtonId}`)[0].style.display = "none";
+        }
+
+        function closeEdit() {
+            window.location.reload();
+        }
+
+        function updateImage(imageId) {
+            if (confirm('Are you sure you want to Edit this Image?')) {
+                imageId--;
+                var form = new FormData();
+                const image = document.getElementById("editImage").files[0];
+                form.append(`image`, image);
+                const images = document.getElementsByClassName("imagePreview")
+                console.log('images: ', images);
+                console.log('imageId: ', imageId);
+
+                for (let i = 0; i < images.length; i++) {
+                    if (i !== imageId) {
+                        console.log(`images[${i}]:`, images[i].src.split("/")[3]);
+
+                        form.append(`images${i}`, images[i].src.split("/")[3]);
+                    }
+                }
+
+                form.append("numberOfImages", images.length);
+                form.append("id", id);
+
+                var settings = {
+                    url: "/editImage",
+                    method: "POST",
+                    timeout: 0,
+                    processData: false,
+                    mimeType: "multipart/form-data",
+                    contentType: false,
+                    data: form,
+                };
+
+                $.ajax(settings).done(function(result) {
+                    document.getElementById("status").innerText = result
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
