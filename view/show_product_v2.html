@@ -546,12 +546,13 @@
 
         function loadMore() {
             $.ajax({
-                type: "GET",
-                url: `/getAllProduct/${page++}`,
-                success: function(result) {
-                    for (let i = 0; i < result.length; i++) {
-                        let html = "";
-                        html += `<div class="column_product">
+                    type: "GET",
+                    url: `/getAllProduct/${page++}`,
+                    success: function(result) {
+                            productId = result[0].id;
+                            for (let i = 0; i < result.length; i++) {
+                                let html = "";
+                                html += `<div class="column_product">
                                 <div class="card">
                                     <div>
                                         <img height="150px" onclick="openModal(${result[i].id})" src='${result[i].primaryImage}'>
@@ -570,37 +571,37 @@
                                     </div>
                                 </div>
                                 <br>
-                                <div>
+                                ${idLS ?`<div>
                                     <textarea id="text_${result[i].id}" rows="1" style="width:88%"></textarea>
                                     <button onclick="addComment(${result[i].id})">Submit</button>
-                                </div>`
-                        $.ajax({
-                            type: "GET",
-                            url: `/comments`,
-                            success: function(resultComment) {
-                                console.log(resultComment)
-                                for (let j = 0; j < resultComment.length; j++) {
-                                    html += `
-                                    ${result[i].id == resultComment[j].product_id?`<div style="display:flex;">
-                                        <p>${resultComment[j].name}</p>
-                                        <p>${resultComment[j].comment}</p>
+                                </div>`:``}
+                                `
+                    $.ajax({
+                        type: "GET",
+                        url: `/comments`,
+                        success: function(resultComment) {
+                            for (let j = 0; j < resultComment.length; j++) {
+                                html += `
+                                ${result[i].id == resultComment[j].product_id?`<div style="display:flex;">
+                                        <p>${resultComment[j].name} : </p>
+                                        <p> ${resultComment[j].comment}</p>
                                         <p style="width:55%"><i>(${conversion(Date.now()-resultComment[j].time)})</i></p>
-                                            ${idLS === resultComment[j].user_id ?
-                                                `<span style="margin-top:14px">
-                                                    <button onclick="deleteComment(${resultComment[j].id})"><i class="fa fa-trash"></i></button>
-                                                    <button onclick="editComment(${resultComment[j].id},${resultComment[j].comment})"><i class="fa fa-pencil"></i></button>
-                                                </span>`
-                                            :``}
-                                        </div>`:``}
-                                        `
-                                }
-                                html += `</div>`
-                                document.getElementById("row").insertAdjacentHTML('beforeend', html);
-                            },
-                        });
-                    }
-                },
-            });
+                                        ${idLS === resultComment[j].user_id ?
+                                            `<span style="margin-top:14px">
+                                                <button onclick="deleteComment(${resultComment[j].id})"><i class="fa fa-trash"></i></button>
+                                                <button onclick="editComment(${resultComment[j].id},${resultComment[j].comment})"><i class="fa fa-pencil"></i></button>
+                                            </span>`
+                                        :``}
+                                    </div>`:``}
+                                    `
+                            }
+                            html += `</div>`
+                            document.getElementById("row").insertAdjacentHTML('beforeend', html);
+                        },
+                    });
+                }
+            },
+        });
         }
 
         function auth() {
