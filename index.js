@@ -14,10 +14,10 @@ app.use(fileUpload());
 app.use(express.static(__dirname + '/uploadImages'));
 
 var sql = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "password",
-    database: 'myProduct_details'
+    host: "sql12.freesqldatabase.com",
+    user: "sql12393481",
+    password: "zfl1FvP5LA",
+    database: 'sql12393481'
 });
 
 sql.connect(function(err) {
