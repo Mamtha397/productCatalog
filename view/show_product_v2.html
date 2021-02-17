@@ -362,8 +362,8 @@
                                     html += `
                                     ${result[i].id == resultComment[j].product_id?`
                                         <div style="display:flex;">
-                                        <p>${resultComment[j].name} : </p>
-                                        <p>${resultComment[j].comment}</p>
+                                        <p>${resultComment[j].name} :</p>
+                                        <p> ${resultComment[j].comment}</p>
                                         <p style="width:55%"><i>(${conversion(Date.now()-resultComment[j].time)})</i></p>
                                             ${idLS === resultComment[j].user_id ?
                                                 `<span style="margin-top:14px">
