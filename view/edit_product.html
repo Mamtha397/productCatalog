@@ -56,7 +56,7 @@
     type: "GET",
     url: `/getOneProduct/${id}`,
     success: function(result){
-      document.getElementById("p_name").value = result[0].productName;
+      document.getElementById("p_name").value = result[0].name;
       document.getElementById("des").value = result[0].description;
       document.getElementById("price").value = result[0].price;
       document.getElementById("stock").value = result[0].stock;
