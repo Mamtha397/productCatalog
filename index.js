@@ -207,9 +207,9 @@ app.put('/editProduct', function(req, res) {
     const category = req.body.category;
     const code = req.body.code;
     const id = req.body.id;
-    
 
-    const updateQuery = `UPDATE Product SET  productName='${productName}', description='${description}', price='${price}', stock='${stock}', colour='${colour}', code='${code}', category='${category}' WHERE id='${id}';`;
+
+    const updateQuery = `UPDATE Product SET  name='${productName}', description='${description}', price='${price}', stock='${stock}', colour='${colour}', code='${code}', category='${category}' WHERE id='${id}';`;
 
     sql.query(updateQuery, function(err, result) {
         if (err) throw err;
