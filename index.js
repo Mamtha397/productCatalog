@@ -232,6 +232,7 @@ app.post('/login', function(req, res) {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    
 
     let passCrypto = mykey.update(`${password}`, 'utf8', 'hex')
     passCrypto += mykey.final('hex');
@@ -311,7 +312,7 @@ app.post("/comment/:product_id/:comment", function(req,res){
     const user_id = req.headers.token;
     const {product_id, comment} = req.params;
     const time = Date.now();
-    
+
 
     const insertQuery = `INSERT INTO comment (user_id, product_id, comment, time) VALUES ('${user_id}', '${product_id}', '${comment}', '${time}');`;
 
